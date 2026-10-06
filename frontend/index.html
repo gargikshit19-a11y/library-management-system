@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library DBMS</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>Library DBMS</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="dashboard">Dashboard</li>
+                <li class="nav-item" data-page="books">Books</li>
+                <li class="nav-item" data-page="members">Members</li>
+                <li class="nav-item" data-page="issue">Issue Book</li>
+                <li class="nav-item" data-page="return">Return Book</li>
+                <li class="nav-item" data-page="loans">Loan Records</li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <div id="message" class="message" style="display:none"></div>
+            
+            <section id="dashboard" class="page active">
+                <h1>Dashboard</h1>
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <h3>Total Books</h3>
+                        <p id="total-books">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Available Copies</h3>
+                        <p id="available-copies">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Total Members</h3>
+                        <p id="total-members">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Currently Issued</h3>
+                        <p id="issued-books">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Overdue Books</h3>
+                        <p id="overdue-books">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="books" class="page">
+                <h1>Books</h1>
+                <div class="section-header">
+                    <button class="btn btn-primary" id="add-book-btn">Add Book</button>
+                    <input type="text" id="book-search" class="search-input" placeholder="Search by title, author, ISBN, category...">
+                </div>
+                <div class="table-container">
+                    <table id="books-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>ISBN</th>
+                                <th>Category</th>
+                                <th>Total</th>
+                                <th>Available</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="members" class="page">
+                <h1>Members</h1>
+                <div class="section-header">
+                    <button class="btn btn-primary" id="add-member-btn">Add Member</button>
+                    <input type="text" id="member-search" class="search-input" placeholder="Search by ID, name, email, phone...">
+                </div>
+                <div class="table-container">
+                    <table id="members-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Join Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="issue" class="page">
+                <h1>Issue Book</h1>
+                <form id="issue-form" class="form">
+                    <div class="form-group">
+                        <label for="issue-book-id">Book ID</label>
+                        <input type="number" id="issue-book-id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="issue-member-id">Member ID</label>
+                        <input type="number" id="issue-member-id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="issue-date">Issue Date</label>
+                        <input type="date" id="issue-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="due-date">Due Date</label>
+                        <input type="date" id="due-date" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Issue Book</button>
+                </form>
+            </section>
+
+            <section id="return" class="page">
+                <h1>Return Book</h1>
+                <form id="return-form" class="form">
+                    <div class="form-group">
+                        <label for="loan-id">Loan ID</label>
+                        <input type="number" id="loan-id" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Return Book</button>
+                </form>
+            </section>
+
+            <section id="loans" class="page">
+                <h1>Loan Records</h1>
+                <div class="section-header">
+                    <button class="btn btn-secondary" id="all-loans-btn">All Loans</button>
+                    <button class="btn btn-secondary" id="overdue-loans-btn">Overdue Loans</button>
+                </div>
+                <div class="table-container">
+                    <table id="loans-table">
+                        <thead>
+                            <tr>
+                                <th>Loan ID</th>
+                                <th>Book</th>
+                                <th>ISBN</th>
+                                <th>Member</th>
+                                <th>Email</th>
+                                <th>Issue Date</th>
+                                <th>Due Date</th>
+                                <th>Return Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal" class="modal" style="display:none">
+        <div class="modal-content">
+            <h2 id="modal-title">Add Book</h2>
+            <form id="book-form" class="form">
+                <input type="hidden" id="book-id">
+                <div class="form-group">
+                    <label for="book-title">Title</label>
+                    <input type="text" id="book-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="book-author">Author</label>
+                    <input type="text" id="book-author" required>
+                </div>
+                <div class="form-group">
+                    <label for="book-isbn">ISBN</label>
+                    <input type="text" id="book-isbn" required>
+                </div>
+                <div class="form-group">
+                    <label for="book-category">Category</label>
+                    <input type="text" id="book-category" required>
+                </div>
+                <div class="form-group">
+                    <label for="book-total">Total Copies</label>
+                    <input type="number" id="book-total" min="0" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="member-modal" class="modal" style="display:none">
+        <div class="modal-content">
+            <h2 id="member-modal-title">Add Member</h2>
+            <form id="member-form" class="form">
+                <input type="hidden" id="member-id">
+                <div class="form-group">
+                    <label for="member-name">Name</label>
+                    <input type="text" id="member-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="member-email">Email</label>
+                    <input type="email" id="member-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="member-phone">Phone</label>
+                    <input type="text" id="member-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="member-join">Join Date</label>
+                    <input type="date" id="member-join" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" id="cancel-member-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
