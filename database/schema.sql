@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS books (
     isbn VARCHAR(20) UNIQUE NOT NULL,
     category VARCHAR(100) NOT NULL,
     total_copies INT NOT NULL CHECK (total_copies >= 0),
-    available_copies INT NOT NULL CHECK (available_copies >= 0 AND available_copies <= total_copies)
+    available_copies INT NOT NULL CHECK (available_copies >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS members (
