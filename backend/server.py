@@ -74,7 +74,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
         if self.serve_static():
             return
         self._set_headers(404)
-        self.wfile.write(json.dumps({'error': 'Not found'}).encode())
+        self.wfile.write(json.dumps({'error': 'Not found'}, default=str).encode())
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -98,7 +98,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 self.handle_return_book(data)
                 return
         self._set_headers(404)
-        self.wfile.write(json.dumps({'error': 'Not found'}).encode())
+        self.wfile.write(json.dumps({'error': 'Not found'}, default=str).encode())
 
     def do_PUT(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -123,7 +123,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.handle_update_member(member_id, data)
             return
         self._set_headers(404)
-        self.wfile.write(json.dumps({'error': 'Not found'}).encode())
+        self.wfile.write(json.dumps({'error': 'Not found'}, default=str).encode())
 
     def do_DELETE(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -136,7 +136,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.handle_delete_member(member_id)
             return
         self._set_headers(404)
-        self.wfile.write(json.dumps({'error': 'Not found'}).encode())
+        self.wfile.write(json.dumps({'error': 'Not found'}, default=str).encode())
 
     def handle_dashboard(self):
         try:
@@ -161,149 +161,149 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 'total_members': total_members,
                 'issued_books': issued_books,
                 'overdue_books': overdue_books
-            }).encode())
+            }, default=str).encode())
         except Exception as e:
             self._set_headers(500)
-            self.wfile.write(json.dumps({'error': str(e)}).encode())
+            self.wfile.write(json.dumps({'error': str(e)}, default=str).encode())
 
     def handle_get_books(self, search):
         books, err = get_all_books(search)
         if err:
             self._set_headers(500)
-            self.wfile.write(json.dumps({'error': err}).encode())
+            self.wfile.write(json.dumps({'error': err}, default=str).encode())
             return
         self._set_headers(200)
-        self.wfile.write(json.dumps(books).encode())
+        self.wfile.write(json.dumps(books, default=str).encode())
 
     def handle_add_book(self, data):
         required = ['title', 'author', 'isbn', 'category', 'total_copies']
         for r in required:
             if not data.get(r):
                 self._set_headers(400)
-                self.wfile.write(json.dumps({'error': f'{r} is required'}).encode())
+                self.wfile.write(json.dumps({'error': f'{r} is required'}, default=str).encode())
                 return
         book_id, err = add_book(data['title'], data['author'], data['isbn'], data['category'], data['total_copies'])
         if err:
             self._set_headers(500)
-            self.wfile.write(json.dumps({'error': err}).encode())
+            self.wfile.write(json.dumps({'error': err}, default=str).encode())
             return
         self._set_headers(201)
-        self.wfile.write(json.dumps({'message': 'Book added successfully', 'book_id': book_id}).encode())
+        self.wfile.write(json.dumps({'message': 'Book added successfully', 'book_id': book_id}, default=str).encode())
 
     def handle_update_book(self, book_id, data):
         required = ['title', 'author', 'isbn', 'category', 'total_copies']
         for r in required:
             if not data.get(r):
                 self._set_headers(400)
-                self.wfile.write(json.dumps({'error': f'{r} is required'}).encode())
+                self.wfile.write(json.dumps({'error': f'{r} is required'}, default=str).encode())
                 return
         success, err = update_book(book_id, data['title'], data['author'], data['isbn'], data['category'], data['total_copies'])
         if not success:
             status = 404 if err == 'Book not found' else 400
             self._set_headers(status)
-            self.wfile.write(json.dumps({'error': err}).encode())
+            self.wfile.write(json.dumps({'error': err}, default=str).encode())
             return
         self._set_headers(200)
-        self.wfile.write(json.dumps({'message': 'Book updated successfully'}).encode())
+        self.wfile.write(json.dumps({'message': 'Book updated successfully'}, default=str).encode())
 
     def handle_delete_book(self, book_id):
         success, err = delete_book(book_id)
         if not success:
             self._set_headers(400)
-            self.wfile.write(json.dumps({'error': err or 'Delete failed'}).encode())
+            self.wfile.write(json.dumps({'error': err or 'Delete failed'}, default=str).encode())
             return
         self._set_headers(200)
-        self.wfile.write(json.dumps({'message': 'Book deleted successfully'}).encode())
+        self.wfile.write(json.dumps({'message': 'Book deleted successfully'}, default=str).encode())
 
     def handle_get_members(self, search):
         members, err = get_all_members(search)
         if err:
             self._set_headers(500)
-            self.wfile.write(json.dumps({'error': err}).encode())
+            self.wfile.write(json.dumps({'error': err}, default=str).encode())
             return
         self._set_headers(200)
-        self.wfile.write(json.dumps(members).encode())
+        self.wfile.write(json.dumps(members, default=str).encode())
 
     def handle_add_member(self, data):
         required = ['name', 'email', 'phone', 'join_date']
         for r in required:
             if not data.get(r):
                 self._set_headers(400)
-                self.wfile.write(json.dumps({'error': f'{r} is required'}).encode())
+                self.wfile.write(json.dumps({'error': f'{r} is required'}, default=str).encode())
                 return
         member_id, err = add_member(data['name'], data['email'], data['phone'], data['join_date'])
         if err:
             self._set_headers(500)
-            self.wfile.write(json.dumps({'error': err}).encode())
+            self.wfile.write(json.dumps({'error': err}, default=str).encode())
             return
         self._set_headers(201)
-        self.wfile.write(json.dumps({'message': 'Member added successfully', 'member_id': member_id}).encode())
+        self.wfile.write(json.dumps({'message': 'Member added successfully', 'member_id': member_id}, default=str).encode())
 
     def handle_update_member(self, member_id, data):
         success, err = update_member(member_id, data['name'], data['email'], data['phone'], data['join_date'])
         if err:
             self._set_headers(500)
-            self.wfile.write(json.dumps({'error': err}).encode())
+            self.wfile.write(json.dumps({'error': err}, default=str).encode())
             return
         self._set_headers(200)
-        self.wfile.write(json.dumps({'message': 'Member updated successfully'}).encode())
+        self.wfile.write(json.dumps({'message': 'Member updated successfully'}, default=str).encode())
 
     def handle_delete_member(self, member_id):
         success, err = delete_member(member_id)
         if not success:
             self._set_headers(400)
-            self.wfile.write(json.dumps({'error': err or 'Delete failed'}).encode())
+            self.wfile.write(json.dumps({'error': err or 'Delete failed'}, default=str).encode())
             return
         self._set_headers(200)
-        self.wfile.write(json.dumps({'message': 'Member deleted successfully'}).encode())
+        self.wfile.write(json.dumps({'message': 'Member deleted successfully'}, default=str).encode())
 
     def handle_get_loans(self):
         loans, err = get_all_loans()
         if err:
             self._set_headers(500)
-            self.wfile.write(json.dumps({'error': err}).encode())
+            self.wfile.write(json.dumps({'error': err}, default=str).encode())
             return
         self._set_headers(200)
-        self.wfile.write(json.dumps(loans).encode())
+        self.wfile.write(json.dumps(loans, default=str).encode())
 
     def handle_get_overdue_loans(self):
         loans, err = get_overdue_loans()
         if err:
             self._set_headers(500)
-            self.wfile.write(json.dumps({'error': err}).encode())
+            self.wfile.write(json.dumps({'error': err}, default=str).encode())
             return
         self._set_headers(200)
-        self.wfile.write(json.dumps(loans).encode())
+        self.wfile.write(json.dumps(loans, default=str).encode())
 
     def handle_issue_book(self, data):
         required = ['book_id', 'member_id', 'issue_date', 'due_date']
         for r in required:
             if not data.get(r):
                 self._set_headers(400)
-                self.wfile.write(json.dumps({'error': f'{r} is required'}).encode())
+                self.wfile.write(json.dumps({'error': f'{r} is required'}, default=str).encode())
                 return
         success, err = issue_book(data['book_id'], data['member_id'], data['issue_date'], data['due_date'])
         if not success:
             self._set_headers(400)
-            self.wfile.write(json.dumps({'error': err}).encode())
+            self.wfile.write(json.dumps({'error': err}, default=str).encode())
             return
         self._set_headers(200)
-        self.wfile.write(json.dumps({'message': 'Book issued successfully'}).encode())
+        self.wfile.write(json.dumps({'message': 'Book issued successfully'}, default=str).encode())
 
     def handle_return_book(self, data):
         required = ['loan_id']
         for r in required:
             if not data.get(r):
                 self._set_headers(400)
-                self.wfile.write(json.dumps({'error': f'{r} is required'}).encode())
+                self.wfile.write(json.dumps({'error': f'{r} is required'}, default=str).encode())
                 return
         success, err = return_book(data['loan_id'])
         if not success:
             self._set_headers(400)
-            self.wfile.write(json.dumps({'error': err}).encode())
+            self.wfile.write(json.dumps({'error': err}, default=str).encode())
             return
         self._set_headers(200)
-        self.wfile.write(json.dumps({'message': 'Book returned successfully'}).encode())
+        self.wfile.write(json.dumps({'message': 'Book returned successfully'}, default=str).encode())
 
 if __name__ == '__main__':
     with socketserver.TCPServer(('', PORT), Handler) as httpd:
